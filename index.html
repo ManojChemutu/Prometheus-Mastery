@@ -1,0 +1,1535 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prometheus Mastery - Complete Learning Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --prometheus-orange: #e6522c;
+            --prometheus-dark: #0a0a0a;
+            --prometheus-gray: #151515;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--prometheus-dark);
+            color: #e5e5e5;
+            overflow-x: hidden;
+        }
+
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+        .grid-bg {
+            background-image: 
+                linear-gradient(rgba(230, 82, 44, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(230, 82, 44, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(40px, 40px); }
+        }
+
+        .glass {
+            background: rgba(21, 21, 21, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(230, 82, 44, 0.15);
+        }
+
+        .neon-glow {
+            box-shadow: 0 0 20px rgba(230, 82, 44, 0.3);
+            transition: all 0.3s ease;
+        }
+        .neon-glow:hover {
+            box-shadow: 0 0 30px rgba(230, 82, 44, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .flip-card {
+            perspective: 1000px;
+            height: 280px;
+            cursor: pointer;
+        }
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            border-radius: 12px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .flip-card-front {
+            background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%);
+            border: 1px solid #333;
+        }
+        .flip-card-back {
+            background: linear-gradient(135deg, #2d1810 0%, #1a0f0a 100%);
+            border: 2px solid #e6522c;
+            transform: rotateY(180deg);
+        }
+
+        .timeline-line {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(to bottom, #e6522c, transparent);
+        }
+        
+        @media (max-width: 768px) {
+            .timeline-line { left: 30px; }
+        }
+
+        .progress-ring-circle {
+            transition: stroke-dashoffset 1s ease-in-out;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+
+        .code-block {
+            background: #050505;
+            border-left: 3px solid #e6522c;
+            font-family: 'JetBrains Mono', monospace;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            transition: all 0.3s ease;
+        }
+        .tab-btn.active {
+            background: #e6522c;
+            color: white;
+            box-shadow: 0 4px 20px rgba(230, 82, 44, 0.4);
+        }
+
+        .arch-node {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .arch-node:hover {
+            filter: drop-shadow(0 0 8px rgba(230, 82, 44, 0.8));
+            transform: scale(1.05);
+        }
+        .arch-connection {
+            stroke-dasharray: 5,5;
+            animation: dash 20s linear infinite;
+        }
+        @keyframes dash {
+            to { stroke-dashoffset: 100; }
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0a0a0a; }
+        ::-webkit-scrollbar-thumb { background: #e6522c; border-radius: 4px; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        .animate-float { animation: float 4s ease-in-out infinite; }
+        
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Learning Module Styles */
+        .learning-module {
+            background: linear-gradient(135deg, rgba(26,26,26,0.9) 0%, rgba(15,15,15,0.9) 100%);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+        }
+        .learning-module:hover {
+            border-color: rgba(230, 82, 44, 0.5);
+            transform: translateX(5px);
+        }
+        .difficulty-badge {
+            font-size: 0.65rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+        .topic-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
+        }
+        .topic-content.expanded {
+            max-height: 2000px;
+        }
+        .expand-btn {
+            transition: transform 0.3s ease;
+        }
+        .expand-btn.rotated {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass border-b border-orange-900/30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-gradient-to-br from-orange-500 to-red-600 rounded flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"/>
+                        </svg>
+                    </div>
+                    <span class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-orange-400 to-red-500">
+                        Prometheus Mastery
+                    </span>
+                </div>
+                <div class="hidden md:flex space-x-8 text-sm font-medium">
+                    <a href="#journey" class="hover:text-orange-400 transition-colors">Journey</a>
+                    <a href="#architecture" class="hover:text-orange-400 transition-colors">Architecture</a>
+                    <a href="#flashcards" class="hover:text-orange-400 transition-colors">Interview Prep</a>
+                    <a href="#cheatsheet" class="hover:text-orange-400 transition-colors">Cheat Sheet</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden">
+        <div class="absolute inset-0 grid-bg opacity-40"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-black/60 to-[#0a0a0a]"></div>
+        
+        <div class="absolute top-1/4 left-1/4 w-64 h-64 bg-orange-500/10 rounded-full blur-3xl animate-float"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-red-500/10 rounded-full blur-3xl animate-float" style="animation-delay: 2s;"></div>
+
+        <div class="relative z-10 max-w-5xl mx-auto px-4 text-center">
+            <div class="inline-block mb-6 px-4 py-1.5 rounded-full glass border border-orange-500/30 text-orange-400 text-xs font-mono tracking-wider">
+                PRODUCTION-READY MONITORING STACK
+            </div>
+            
+            <h1 class="text-5xl md:text-7xl font-bold mb-6 tracking-tight">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-red-500 to-orange-600">Prometheus</span>
+                <br>
+                <span class="text-3xl md:text-5xl text-gray-400 font-light">Mastery Path</span>
+            </h1>
+            
+            <p class="text-lg text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed">
+                Complete learning platform from zero to production. Master metrics, PromQL, alerting, and scalable observability architectures.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="#journey" class="group px-8 py-4 bg-gradient-to-r from-orange-500 to-red-600 rounded-lg font-semibold text-white neon-glow flex items-center justify-center gap-2">
+                    <span>Start Learning</span>
+                    <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                </a>
+                <a href="#cheatsheet" class="px-8 py-4 glass rounded-lg font-semibold text-orange-400 border border-orange-500/30 hover:bg-orange-500/10 transition-all">
+                    Quick Reference
+                </a>
+            </div>
+
+            <div class="mt-20 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto">
+                <div class="glass p-4 rounded-lg neon-glow">
+                    <div class="text-2xl font-bold text-orange-400">4</div>
+                    <div class="text-xs text-gray-500 uppercase tracking-wider mt-1">Levels</div>
+                </div>
+                <div class="glass p-4 rounded-lg neon-glow">
+                    <div class="text-2xl font-bold text-orange-400">50+</div>
+                    <div class="text-xs text-gray-500 uppercase tracking-wider mt-1">Flashcards</div>
+                </div>
+                <div class="glass p-4 rounded-lg neon-glow">
+                    <div class="text-2xl font-bold text-orange-400">100+</div>
+                    <div class="text-xs text-gray-500 uppercase tracking-wider mt-1">Queries</div>
+                </div>
+                <div class="glass p-4 rounded-lg neon-glow">
+                    <div class="text-2xl font-bold text-orange-400">15</div>
+                    <div class="text-xs text-gray-500 uppercase tracking-wider mt-1">Exporters</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Architecture Diagram -->
+    <section id="architecture" class="py-24 relative">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">System Architecture</h2>
+                <p class="text-gray-400">Click components to explore their roles in the monitoring pipeline</p>
+            </div>
+            
+            <div class="glass rounded-2xl p-8 border border-orange-500/10">
+                <div class="relative w-full overflow-x-auto">
+                    <svg viewBox="0 0 900 500" class="w-full min-w-[600px] h-auto">
+                        <defs>
+                            <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                                <path d="M0,0 L0,6 L9,3 z" fill="#e6522c" />
+                            </marker>
+                            <linearGradient id="nodeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#1a1a1a;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#0f0f0f;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+
+                        <path d="M 200 150 Q 300 200 400 220" fill="none" stroke="#e6522c" stroke-width="2" class="arch-connection" marker-end="url(#arrow)"/>
+                        <path d="M 700 150 Q 600 200 500 220" fill="none" stroke="#e6522c" stroke-width="2" class="arch-connection" marker-end="url(#arrow)"/>
+                        <path d="M 200 350 Q 300 300 400 280" fill="none" stroke="#e6522c" stroke-width="2" class="arch-connection" marker-end="url(#arrow)"/>
+                        
+                        <line x1="450" y1="280" x2="450" y2="350" stroke="#e6522c" stroke-width="2" marker-end="url(#arrow)"/>
+                        <path d="M 500 250 Q 600 200 650 180" fill="none" stroke="#ff4444" stroke-width="2" marker-end="url(#arrow)"/>
+                        <path d="M 400 250 Q 300 300 250 350" fill="none" stroke="#ff9500" stroke-width="2" marker-end="url(#arrow)"/>
+
+                        <g class="arch-node" onclick="showArchDetails('targets')">
+                            <rect x="150" y="120" width="100" height="60" rx="8" fill="url(#nodeGrad)" stroke="#e6522c" stroke-width="2"/>
+                            <text x="200" y="145" text-anchor="middle" fill="#fff" font-size="11" font-weight="600">Targets</text>
+                            <text x="200" y="165" text-anchor="middle" fill="#666" font-size="9">Apps/Exporters</text>
+                        </g>
+
+                        <g class="arch-node" onclick="showArchDetails('prometheus')">
+                            <circle cx="450" cy="250" r="50" fill="#151515" stroke="#e6522c" stroke-width="3"/>
+                            <text x="450" y="245" text-anchor="middle" fill="#e6522c" font-size="12" font-weight="bold">Prometheus</text>
+                            <text x="450" y="260" text-anchor="middle" fill="#666" font-size="8">Server</text>
+                        </g>
+
+                        <g class="arch-node" onclick="showArchDetails('tsdb')">
+                            <rect x="400" y="350" width="100" height="50" rx="6" fill="#0f0f0f" stroke="#e6522c" stroke-width="2"/>
+                            <text x="450" y="375" text-anchor="middle" fill="#fff" font-size="11" font-weight="600">TSDB</text>
+                            <text x="450" y="390" text-anchor="middle" fill="#666" font-size="8">Time Series DB</text>
+                        </g>
+
+                        <g class="arch-node" onclick="showArchDetails('alertmanager')">
+                            <rect x="650" y="150" width="100" height="60" rx="8" fill="#151515" stroke="#ff4444" stroke-width="2"/>
+                            <text x="700" y="175" text-anchor="middle" fill="#ff4444" font-size="11" font-weight="600">Alertmanager</text>
+                            <text x="700" y="195" text-anchor="middle" fill="#666" font-size="8">Routing/Silencing</text>
+                        </g>
+
+                        <g class="arch-node" onclick="showArchDetails('grafana')">
+                            <rect x="150" y="350" width="100" height="50" rx="6" fill="#151515" stroke="#ff9500" stroke-width="2"/>
+                            <text x="200" y="380" text-anchor="middle" fill="#ff9500" font-size="11" font-weight="600">Grafana</text>
+                        </g>
+
+                        <g class="arch-node" onclick="showArchDetails('sd')">
+                            <rect x="650" y="350" width="100" height="50" rx="6" fill="#151515" stroke="#666" stroke-width="2"/>
+                            <text x="700" y="375" text-anchor="middle" fill="#fff" font-size="10" font-weight="600">Service Discovery</text>
+                        </g>
+                    </svg>
+                </div>
+
+                <div id="arch-info" class="mt-6 p-6 bg-black/40 rounded-xl border border-orange-500/20 min-h-[120px] flex items-center justify-center text-center">
+                    <p class="text-gray-500 text-sm">Click any component above to view detailed information about its role and configuration</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Learning Journey with Detailed Content -->
+    <section id="journey" class="py-24 bg-[#050505] relative">
+        <div class="max-w-6xl mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-16">Detailed Learning Roadmap</h2>
+            
+            <div class="relative">
+                <div class="timeline-line"></div>
+
+                <!-- BEGINNER LEVEL -->
+                <div class="relative mb-20 fade-in">
+                    <div class="flex flex-col md:flex-row gap-8">
+                        <!-- Level Header -->
+                        <div class="md:w-1/3 md:text-right">
+                            <div class="sticky top-24">
+                                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-500/20 border-2 border-green-500 mb-4 shadow-lg shadow-green-500/20">
+                                    <span class="text-2xl font-bold text-green-400">01</span>
+                                </div>
+                                <h3 class="text-3xl font-bold text-green-400 mb-2">Beginner</h3>
+                                <p class="text-gray-400 text-sm mb-4">Foundation & Core Concepts</p>
+                                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-500/10 text-green-400 text-xs font-mono border border-green-500/20">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    40 Hours
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Level Content -->
+                        <div class="md:w-2/3 space-y-4">
+                            
+                            <!-- Topic 1 -->
+                            <div class="learning-module rounded-xl p-6 cursor-pointer" onclick="toggleTopic(this)">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="flex items-center gap-3">
+                                        <span class="difficulty-badge px-2 py-1 rounded bg-green-500/20 text-green-400">Core Concept</span>
+                                        <h4 class="text-lg font-bold text-white">Understanding Metric Types</h4>
+                                    </div>
+                                    <svg class="w-5 h-5 text-gray-400 expand-btn" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                </div>
+                                <p class="text-sm text-gray-400 mb-2">The four fundamental metric types in Prometheus data model</p>
+                                
+                                <div class="topic-content mt-4 space-y-4 border-t border-gray-800 pt-4">
+                                    <div class="space-y-3 text-sm text-gray-300">
+                                        <p><strong class="text-orange-400">Counter:</strong> Cumulative metric that only increases (or resets to 0 on restart). Perfect for counting requests, errors, or completed tasks. Never use raw counters in graphs - always wrap with <code class="bg-gray-800 px-1 rounded">rate()</code> or <code class="bg-gray-800 px-1 rounded">increase()</code>.</p>
+                                        
+                                        <div class="code-block p-3 rounded text-xs">
+                                            <span class="text-gray-500"># Good: Requests per second</span><br>
+                                            rate(http_requests_total[5m])
+                                        </div>
+
+                                        <p><strong class="text-orange-400">Gauge:</strong> Single numerical value that can arbitrarily go up and down. Use for temperatures, memory usage, queue sizes. No aggregation functions needed.</p>
+                                        
+                                        <p><strong class="text-orange-400">Histogram:</strong> Samples observations (like request durations) into configurable buckets. Provides _count, _sum, and _bucket time series. Use for SLIs and latency tracking.</p>
+                                        
+                                        <div class="code-block p-3 rounded text-xs">
+                                            <span class="text-gray-500"># 95th percentile latency</span><br>
+                                            histogram_quantile(0.95, 
+                                            rate(http_request_duration_seconds_bucket[5m]))
+                                        </div>
+
+                                        <p><strong class="text-orange-400">Summary:</strong> Similar to histogram but calculates quantiles client-side using sliding time windows. Higher CPU cost and can't be aggregated across dimensions. Generally prefer Histograms.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Topic 2 -->
+                            <div class="learning-module rounded-xl p-6 cursor-pointer" onclick="toggleTopic(this)">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="flex items-center gap-3">
+                                        <span class="difficulty-badge px-2 py-1 rounded bg-blue-500/20 text-blue-400">Hands-on</span>
+                                        <h4 class="text-lg font-bold text-white">Installation & Configuration</h4>
+                                    </div>
+                                    <svg class="w-5 h-5 text-gray-400 expand-btn" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                </div>
+                                <p class="text-sm text-gray-400 mb-2">Deploying Prometheus locally and in Docker</p>
+                                
+                                <div class="topic-content mt-4 space-y-4 border-t border-gray-800 pt-4">
+                                    <div class="space-y-3 text-sm text-gray-300">
+                                        <p>Start with Docker for local testing:</p>
+                                        <div class="code-block p-3 rounded text-xs">
+                                            docker run -p 9090:9090 \
+                                            -v $(pwd)/prometheus.yml:/etc/prometheus/prometheus.yml \
+                                            prom/prometheus:latest
+                                        </div>
+                                        
+                                        <p class="mt-3"><strong>Key Configuration Parameters:</strong></p>
+                                        <ul class="list-disc list-inside space-y-1 text-gray-400">
+                                            <li><code class="text-orange-400">global.scrape_interval</code>: How often to scrape targets (default 1m)</li>
+                                            <li><code class="text-orange-400">global.evaluation_interval</code>: How often to evaluate rules (default 1m)</li>
+                                            <li><code class="text-orange-400">scrape_configs</code>: Array of jobs and targets to monitor</li>
+                                        </ul>
+
+                                        <p class="mt-3"><strong>Storage Configuration:</strong></p>
+                                        <p class="text-gray-400">TSDB retention is controlled by <code class="text-orange-400">--storage.tsdb.retention.time</code> (default 15d) or <code class="text-orange-400">--storage.tsdb.retention.size</code> for size-based retention.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Topic 3 -->
+                            <div class="learning-module rounded-xl p-6 cursor-pointer" onclick="toggleTopic(this)">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="flex items-center gap-3">
+                                        <span class="difficulty-badge px-2 py-1 rounded bg-purple-500/20 text-purple-400">Querying</span>
+                                        <h4 class="text-lg font-bold text-white">First PromQL Queries</h4>
+                                    </div>
+                                    <svg class="w-5 h-5 text-gray-400 expand-btn" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                </div>
+                                <p class="text-sm text-gray-400 mb-2">Instant vectors, selectors, and basic filtering</p>
+                                
+                                <div class="topic-content mt-4 space-y-4 border-t border-gray-800 pt-4">
+                                    <div class="space-y-3 text-sm text-gray-300">
+                                        <p><strong>Instant Vector Selectors:</strong> Select series at a single point in time.</p>
+                                        <div class="code-block p-3 rounded text-xs">
+                                            <span class="text-gray-500"># Select all http_requests_total series</span><br>
+                                            http_requests_total<br><br>
+                                            <span class="text-gray-500"># Filter by label</span><br>
+                                            http_requests_total{method="GET", status="200"}<br><br>
+                                            <span class="text-gray-500"># Regex match</span><br>
+                                            http_requests_total{status=~"2.."}
+                                        </div>
+
+                                        <p class="mt-3"><strong>Range Vectors:</strong> Select samples over a time range (required for rate calculations).</p>
+                                        <div class="code-block p-3 rounded text-xs">
+                                            <span class="text-gray-500"># Last 5 minutes of samples</span><br>
+                                            http_requests_total[5m]
+                                        </div>
+
+                                        <p class="mt-3"><strong>Time Durations:</strong> ms, s, m, h, d, w, y. Must be used in square brackets for range vectors.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Topic 4 -->
+                            <div class="learning-module rounded-xl p-6 cursor-pointer" onclick="toggleTopic(this)">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="flex items-center gap-3">
+                                        <span class="difficulty-badge px-2 py-1 rounded bg-yellow-500/20 text-yellow-400">Exporters</span>
+                                        <h4 class="text-lg font-bold text-white">Node Exporter Deep Dive</h4>
+                                    </div>
+                                    <svg class="w-5 h-5 text-gray-400 expand-btn" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                </div>
+                                <p class="text-sm text-gray-400 mb-2">Monitoring Linux/Unix system metrics</p>
+                                
+                                <div class="topic-content mt-4 space-y-4 border-t border-gray-800 pt-4">
+                                    <div class="space-y-3 text-sm text-gray-300">
+                                        <p>Node Exporter exposes hardware and OS metrics. Key collectors include:</p>
+                                        <ul class="list-disc list-inside space-y-1 text-gray-400">
+                                            <li><code class="text-orange-400">cpu</code>: CPU usage modes (user, system, idle, iowait)</li>
+                                            <li><code class="text-orange-400">memory</code>: RAM usage, buffers, cache</li>
+                                            <li><code class="text-orange-400">filesystem</code>: Disk usage and inode statistics</li>
+                                            <li><code class="text-orange-400">diskstats</code>: I/O operations and throughput</li>
+                                            <li><code class="text-orange-400">network</code>: Interface traffic and errors</li>
+                                        </ul>
+
+                                        <p class="mt-3"><strong>Essential Queries:</strong></p>
+                                        <div class="code-block p-3 rounded text-xs">
+                                            <span class="text-gray-500"># CPU Usage %</span><br>
+                                            100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)<br><br>
+                                            <span class="text-gray-500"># Memory Usage %</span><br>
+                                            100 * (1 - ((node_memory_MemAvailable_bytes or node_memory_Buffers_bytes + node_memory_Cached_bytes) / node_memory_MemTotal_bytes))
+                                        </div>
+
+                                        <p class="mt-3 text-yellow-400"><strong>Best Practice:</strong> Disable unused collectors with <code class="bg-gray-800 px-1 rounded">--no-collector.XXX</code> to reduce resource usage.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- INTERMEDIATE LEVEL -->
+                <div class="relative mb-20 fade-in">
+                    <div class="flex flex-col md:flex-row-reverse gap-8">
+                        <div class="md:w-1/3 md:text-left">
+                            <div class="sticky top-24">
+                                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-500/20 border-2 border-blue-500 mb-4 shadow-lg shadow-blue-500/20">
+                                    <span class="text-2xl font-bold text-blue-400">02</span>
+                                </div>
+                                <h3 class="text-3xl font-bold text-blue-400 mb-2">Intermediate</h3>
+                                <p class="text-gray-400 text-sm mb-4">Advanced Querying & Alerting</p>
+                                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 text-xs font-mono border border-blue-500/20">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    60 Hours
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="md:w-2/3 space-y-4">
+                            
+                            <!-- Topic 1 -->
+                            <div class="learning-module rounded-xl p-6 cursor-pointer" onclick="toggleTopic(this)">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="flex items-center gap-3">
+                                        <span class="difficulty-badge px-2 py-1 rounded bg-blue-500/20 text-blue-400">PromQL</span>
+                                        <h4 class="text-lg font-bold text-white">Advanced PromQL & Aggregations</h4>
+                                    </div>
+                                    <svg class="w-5 h-5 text-gray-400 expand-btn" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                </div>
+                                <p class="text-sm text-gray-400 mb-2">Rate calculations, aggregation operators, and vector matching</p>
+                                
+                                <div class="topic-content mt-4 space-y-4 border-t border-gray-800 pt-4">
+                                    <div class="space-y-3 text-sm text-gray-300">
+                                        <p><strong>Rate vs Irate:</strong></p>
+                                        <p class="text-gray-400"><code class="text-blue-400">rate()</code> calculates the average per-second over the range, smoothing spikes. <code class="text-blue-400">irate()</code> uses only the last two data points, showing instant spikes. Use rate() for alerts, irate() for dashboards.</p>
+                                        
+                                        <div class="code-block p-3 rounded text-xs">
+                                            <span class="text-gray-500"># Request rate per minute</span><br>
+                                            rate(http_requests_total[5m]) * 60<br><br>
+                                            <span class="text-gray-500"># Total increase over 1 hour</span><br>
+                                            increase(http_requests_total[1h])
+                                        </div>
+
+                                        <p class="mt-3"><strong>Aggregation Operators:</strong></p>
+                                        <ul class="list-disc list-inside space-y-1 text-gray-400 text-xs">
+                                            <li><code class="text-blue-400">sum</code>: Calculate total across dimensions</li>
+                                            <li><code class="text-blue-400">avg</code>: Average (susceptible to outliers)</li>
+                                            <li><code class="text-blue-400">max/min</code>: Identify hotspots</li>
+                                            <li><code class="text-blue-400">count</code>: Count number of series</li>
+                                            <li><code class="text-blue-400">topk/bottomk</code>: Select extreme values</li>
+                                            <li><code class="text-blue-400">quantile</code>: Calculate φ-quantiles (0 ≤ φ ≤ 1)</li>
+                                        </ul>
+
+                                        <p class="mt-3"><strong>Without vs By:</strong></p>
+                                        <div class="code-block p-3 rounded text-xs">
+                                            <span class="text-gray-500"># Sum everything, keep only 'method'</span><br>
+                                            sum by (method) (http_requests_total)<br><br>
+                                            <span class="text-gray-500"># Sum everything except 'instance'</span><br>
+                                            sum without (instance) (http_requests_total)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Topic 2 -->
+                            <div class="learning-module rounded-xl p-6 cursor-pointer" onclick="toggleTopic(this)">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="flex items-center gap-3">
+                                        <span class="difficulty-badge px-2 py-1 rounded bg-orange-500/20 text-orange-400">Rules</span>
+                                        <h4 class="text-lg font-bold text-white">Recording & Alerting Rules</h4>
+                                    </div>
+                                    <svg class="w-5 h-5 text-gray-400 expand-btn" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                </div>
+                                <p class="text-sm text-gray-400 mb-2">Pre-aggregation and automated alerting</p>
+                                
+                                <div class="topic-content mt-4 space-y-4 border-t border-gray-800 pt-4">
+                                    <div class="space-y-3 text-sm text-gray-300">
+                                        <p><strong>Recording Rules:</strong> Pre-calculate expensive queries to improve dashboard performance. Stored as new time series.</p>
+                                        
+                                        <div class="code-block p-3 rounded text-xs">
+                                            <span class="text-gray-500"># rules.yml</span><br>
+                                            groups:<br>
+                                            &nbsp;&nbsp;- name: api_rules<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;interval: 10s<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;rules:<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- record: job:http_requests:rate5m<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expr: sum by (job) (rate(http_requests_total[5m]))
+                                        </div>
+
+                                        <p class="mt-3"><strong>Alerting Rules:</strong> Define conditions that trigger alerts to Alertmanager.</p>
+                                        
+                                        <div class="code-block p-3 rounded text-xs">
+                                            - alert: HighErrorRate<br>
+                                            &nbsp;&nbsp;expr: |<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;sum by (job) (rate(http_requests_total{status=~"5.."}[5m])) /<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;sum by (job) (rate(http_requests_total[5m])) > 0.01<br>
+                                            &nbsp;&nbsp;for: 5m<br>
+                                            &nbsp;&nbsp;labels:<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;severity: warning<br>
+                                            &nbsp;&nbsp;annotations:<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;summary: "High error rate in {{ $labels.job }}"<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;description: "Error rate is {{ $value | humanizePercentage }}"
+                                        </div>
+
+                                        <p class="mt-3 text-orange-400"><strong>Key Concept:</strong> The <code class="bg-gray-800 px-1 rounded">for</code> clause prevents flapping. Alert must be active for 5 minutes before firing.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Topic 3 -->
+                            <div class="learning-module rounded-xl p-6 cursor-pointer" onclick="toggleTopic(this)">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="flex items-center gap-3">
+                                        <span class="difficulty-badge px-2 py-1 rounded bg-red-500/20 text-red-400">Alerting</span>
+                                        <h4 class="text-lg font-bold text-white">Alertmanager Configuration</h4>
+                                    </div>
+                                    <svg class="w-5 h-5 text-gray-400 expand-btn" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                </div>
+                                <p class="text-sm text-gray-400 mb-2">Routing trees, inhibition, and silencing</p>
+                                
+                                <div class="topic-content mt-4 space-y-4 border-t border-gray-800 pt-4">
+                                    <div class="space-y-3 text-sm text-gray-300">
+                                        <p><strong>Routing Tree:</strong> Alerts are matched against routes in order. First match wins unless <code class="text-red-400">continue: true</code>.</p>
+                                        
+                                        <div class="code-block p-3 rounded text-xs">
+                                            route:<br>
+                                            &nbsp;&nbsp;group_by: ['alertname', 'cluster']<br>
+                                            &nbsp;&nbsp;group_wait: 30s<br>
+                                            &nbsp;&nbsp;group_interval: 5m<br>
+                                            &nbsp;&nbsp;repeat_interval: 12h<br>
+                                            &nbsp;&nbsp;receiver: 'default'<br>
+                                            &nbsp;&nbsp;routes:<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;- match:<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;severity: critical<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;receiver: 'pagerduty'
+                                        </div>
+
+                                        <p class="mt-3"><strong>Inhibition:</strong> Suppress notifications for lower severity alerts if higher severity is firing:</p>
+                                        <div class="code-block p-3 rounded text-xs">
+                                            inhibit_rules:<br>
+                                            &nbsp;&nbsp;- source_match:<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;severity: 'critical'<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;target_match:<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;severity: 'warning'<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;equal: ['alertname', 'cluster']
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Topic 4 -->
+                            <div class="learning-module rounded-xl p-6 cursor-pointer" onclick="toggleTopic(this)">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="flex items-center gap-3">
+                                        <span class="difficulty-badge px-2 py-1 rounded bg-purple-500/20 text-purple-400">Discovery</span>
+                                        <h4 class="text-lg font-bold text-white">Service Discovery</h4>
+                                    </div>
+                                    <svg class="w-5 h-5 text-gray-400 expand-btn" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                </div>
+                                <p class="text-sm text-gray-400 mb-2">Kubernetes, Consul, and EC2 auto-discovery</p>
+                                
+                                <div class="topic-content mt-4 space-y-4 border-t border-gray-800 pt-4">
+                                    <div class="space-y-3 text-sm text-gray-300">
+                                        <p><strong>Kubernetes SD:</strong> Automatically discovers pods and services via the API server.</p>
+                                        
+                                        <div class="code-block p-3 rounded text-xs">
+                                            scrape_configs:<br>
+                                            &nbsp;&nbsp;- job_name: 'kubernetes-pods'<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;kubernetes_sd_configs:<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- role: pod<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;relabel_configs:<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;action: keep<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;regex: true<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_port]<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;action: replace<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;target_label: __address__<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;regex: ([^:]+)(?::\d+)?;(\d+)<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;replacement: $1:$2
+                                        </div>
+
+                                        <p class="mt-3 text-purple-400"><strong>Meta Labels:</strong> Special labels starting with <code class="bg-gray-800 px-1 rounded">__meta_</code> provided by SD mechanisms. Use relabeling to convert them to target labels.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ADVANCED LEVEL -->
+                <div class="relative mb-20 fade-in">
+                    <div class="flex flex-col md:flex-row gap-8">
+                        <div class="md:w-1/3 md:text-right">
+                            <div class="sticky top-24">
+                                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-purple-500/20 border-2 border-purple-500 mb-4 shadow-lg shadow-purple-500/20">
+                                    <span class="text-2xl font-bold text-purple-400">03</span>
+                                </div>
+                                <h3 class="text-3xl font-bold text-purple-400 mb-2">Advanced</h3>
+                                <p class="text-gray-400 text-sm mb-4">Scaling & Federation</p>
+                                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 text-purple-400 text-xs font-mono border border-purple-500/20">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    80 Hours
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="md:w-2/3 space-y-4">
+                            
+                            <!-- Topic 1 -->
+                            <div class="learning-module rounded-xl p-6 cursor-pointer" onclick="toggleTopic(this)">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="flex items-center gap-3">
+                                        <span class="difficulty-badge px-2 py-1 rounded bg-purple-500/20 text-purple-400">Performance</span>
+                                        <h4 class="text-lg font-bold text-white">Performance Tuning & Cardinality</h4>
+                                    </div>
+                                    <svg class="w-5 h-5 text-gray-400 expand-btn" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                </div>
+                                <p class="text-sm text-gray-400 mb-2">Managing high cardinality and scrape optimization</p>
+                                
+                                <div class="topic-content mt-4 space-y-4 border-t border-gray-800 pt-4">
+                                    <div class="space-y-3 text-sm text-gray-300">
+                                        <p><strong>Cardinality Crisis:</strong> Cardinality = number of unique time series. Explodes with high-cardinality labels like user_id, request_id, or IP addresses.</p>
+                                        
+                                        <p class="mt-2 text-purple-400"><strong>Mitigation Strategies:</strong></p>
+                                        <ul class="list-disc list-inside space-y-1 text-gray-400 text-xs">
+                                            <li>Drop high-card labels using <code class="text-purple-400">metric_relabel_configs</code></li>
+                                            <li>Use <code class="text-purple-400">sample_limit</code> in scrape_configs to protect against runaway targets</li>
+                                            <li>Increase scrape interval for high-volume targets</li>
+                                            <li>Shard by job using external_labels and federation</li>
+                                        </ul>
+
+                                        <div class="code-block p-3 rounded text-xs">
+                                            <span class="text-gray-500"># Drop user_id label to prevent cardinality explosion</span><br>
+                                            metric_relabel_configs:<br>
+                                            &nbsp;&nbsp;- source_labels: [user_id]<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;target_label: user_id<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;replacement: ''<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;action: replace
+                                        </div>
+
+                                        <p class="mt-3"><strong>Scrape Optimization:</strong></p>
+                                        <p class="text-gray-400 text-xs">Use <code class="text-purple-400">scrape_timeout</code> and <code class="text-purple-400">scrape_interval</code> tuning. For >1000 targets, consider horizontal sharding.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Topic 2 -->
+                            <div class="learning-module rounded-xl p-6 cursor-pointer" onclick="toggleTopic(this)">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="flex items-center gap-3">
+                                        <span class="difficulty-badge px-2 py-1 rounded bg-indigo-500/20 text-indigo-400">Storage</span>
+                                        <h4 class="text-lg font-bold text-white">Remote Storage & Federation</h4>
+                                    </div>
+                                    <svg class="w-5 h-5 text-gray-400 expand-btn" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                </div>
+                                <p class="text-sm text-gray-400 mb-2">Long-term storage solutions and cross-cluster aggregation</p>
+                                
+                                <div class="topic-content mt-4 space-y-4 border-t border-gray-800 pt-4">
+                                    <div class="space-y-3 text-sm text-gray-300">
+                                        <p><strong>Federation:</strong> Hierarchical scraping where a global Prometheus scrapes aggregated metrics from regional Prometheus servers.</p>
+                                        
+                                        <div class="code-block p-3 rounded text-xs">
+                                            <span class="text-gray-500"># Global Prometheus scrape config</span><br>
+                                            scrape_configs:<br>
+                                            &nbsp;&nbsp;- job_name: 'federate'<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;honor_labels: true<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;metrics_path: '/federate'<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;params:<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'match[]':<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- '{__name__=~"job:.*"}'  <span class="text-gray-500"># Only aggregated metrics</span><br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;static_configs:<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- targets: ['region1-prometheus:9090']
+                                        </div>
+
+                                        <p class="mt-3"><strong>Remote Write:</strong> Stream samples to external systems (Thanos, Cortex, InfluxDB):</p>
+                                        <div class="code-block p-3 rounded text-xs">
+                                            remote_write:<br>
+                                            &nbsp;&nbsp;- url: "http://cortex:9009/api/prom/push"<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;queue_config:<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;capacity: 10000<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;max_samples_per_send: 2000
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Topic 3 -->
+                            <div class="learning-module rounded-xl p-6 cursor-pointer" onclick="toggleTopic(this)">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="flex items-center gap-3">
+                                        <span class="difficulty-badge px-2 py-1 rounded bg-green-500/20 text-green-400">Development</span>
+                                        <h4 class="text-lg font-bold text-white">Custom Exporter Development</h4>
+                                    </div>
+                                    <svg class="w-5 h-5 text-gray-400 expand-btn" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                </div>
+                                <p class="text-sm text-gray-400 mb-2">Building exporters in Go and Python</p>
+                                
+                                <div class="topic-content mt-4 space-y-4 border-t border-gray-800 pt-4">
+                                    <div class="space-y-3 text-sm text-gray-300">
+                                        <p><strong>Python Example (Prometheus Client):</strong></p>
+                                        <div class="code-block p-3 rounded text-xs">
+                                            from prometheus_client import Counter, Histogram, start_http_server<br>
+                                            import random<br><br>
+                                            REQUESTS = Counter('app_requests_total', 'Total requests')<br>
+                                            LATENCY = Histogram('app_latency_seconds', 'Request latency')<br><br>
+                                            @LATENCY.time()<br>
+                                            def process_request():<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;REQUESTS.inc()<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;time.sleep(random.random())<br><br>
+                                            if __name__ == '__main__':<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;start_http_server(8000)
+                                        </div>
+
+                                        <p class="mt-3 text-green-400"><strong>Best Practices:</strong></p>
+                                        <ul class="list-disc list-inside space-y-1 text-gray-400 text-xs">
+                                            <li>Always use namespaces for metrics (e.g., <code class="text-green-400">appname_requests_total</code>)</li>
+                                            <li>Follow USE (Utilization/Saturation/Errors) for resources</li>
+                                            <li>Follow RED (Rate/Errors/Duration) for services</li>
+                                            <li>Never change label names in patch releases</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Topic 4 -->
+                            <div class="learning-module rounded-xl p-6 cursor-pointer" onclick="toggleTopic(this)">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="flex items-center gap-3">
+                                        <span class="difficulty-badge px-2 py-1 rounded bg-yellow-500/20 text-yellow-400">Metrics Design</span>
+                                        <h4 class="text-lg font-bold text-white">Histograms & Quantiles Deep Dive</h4>
+                                    </div>
+                                    <svg class="w-5 h-5 text-gray-400 expand-btn" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                </div>
+                                <p class="text-sm text-gray-400 mb-2">Proper bucket configuration and statistical analysis</p>
+                                
+                                <div class="topic-content mt-4 space-y-4 border-t border-gray-800 pt-4">
+                                    <div class="space-y-3 text-sm text-gray-300">
+                                        <p><strong>Bucket Strategy:</strong> Choose buckets based on your SLOs. If target latency is 100ms, use buckets around that value.</p>
+                                        
+                                        <div class="code-block p-3 rounded text-xs">
+                                            <span class="text-gray-500"># Default buckets (suitable for web services)</span><br>
+                                            .005, .01, .025, .05, .1, .25, .5, 1, 2.5, 5, 10<br><br>
+                                            <span class="text-gray-500"># Custom buckets for database queries</span><br>
+                                            buckets=[.001, .005, .01, .025, .05, .1, .25, .5, 1]
+                                        </div>
+
+                                        <p class="mt-3 text-yellow-400"><strong>Warning:</strong> histogram_quantile() is an approximation based on buckets. Error increases with fewer buckets. Use <code class="bg-gray-800 px-1 rounded">rate()</code> before <code class="bg-gray-800 px-1 rounded">histogram_quantile()</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- EXPERT LEVEL -->
+                <div class="relative fade-in">
+                    <div class="flex flex-col md:flex-row-reverse gap-8">
+                        <div class="md:w-1/3 md:text-left">
+                            <div class="sticky top-24">
+                                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-orange-500/20 border-2 border-orange-500 mb-4 shadow-lg shadow-orange-500/20">
+                                    <span class="text-2xl font-bold text-orange-400">04</span>
+                                </div>
+                                <h3 class="text-3xl font-bold text-orange-400 mb-2">Expert</h3>
+                                <p class="text-gray-400 text-sm mb-4">Enterprise Observability</p>
+                                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 text-orange-400 text-xs font-mono border border-orange-500/20">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    100+ Hours
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="md:w-2/3 space-y-4">
+                            
+                            <!-- Topic 1 -->
+                            <div class="learning-module rounded-xl p-6 cursor-pointer" onclick="toggleTopic(this)">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="flex items-center gap-3">
+                                        <span class="difficulty-badge px-2 py-1 rounded bg-orange-500/20 text-orange-400">Kubernetes</span>
+                                        <h4 class="text-lg font-bold text-white">Prometheus Operator & CRDs</h4>
+                                    </div>
+                                    <svg class="w-5 h-5 text-gray-400 expand-btn" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                </div>
+                                <p class="text-sm text-gray-400 mb-2">Native Kubernetes management of Prometheus instances</p>
+                                
+                                <div class="topic-content mt-4 space-y-4 border-t border-gray-800 pt-4">
+                                    <div class="space-y-3 text-sm text-gray-300">
+                                        <p>The Prometheus Operator introduces Kubernetes CRDs for managing Prometheus, Alertmanager, and related components declaratively.</p>
+                                        
+                                        <div class="code-block p-3 rounded text-xs">
+                                            <span class="text-gray-500"># ServiceMonitor CRD</span><br>
+                                            apiVersion: monitoring.coreos.com/v1<br>
+                                            kind: ServiceMonitor<br>
+                                            metadata:<br>
+                                            &nbsp;&nbsp;name: frontend<br>
+                                            spec:<br>
+                                            &nbsp;&nbsp;selector:<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;matchLabels:<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;app: frontend<br>
+                                            &nbsp;&nbsp;endpoints:<br>
+                                            &nbsp;&nbsp;- port: web<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;interval: 30s<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;path: /metrics
+                                        </div>
+
+                                        <p class="mt-3"><strong>Key CRDs:</strong></p>
+                                        <ul class="list-disc list-inside space-y-1 text-gray-400 text-xs">
+                                            <li><code class="text-orange-400">Prometheus</code>: Defines Prometheus deployment, storage, retention</li>
+                                            <li><code class="text-orange-400">Alertmanager</code>: Configures Alertmanager clusters</li>
+                                            <li><code class="text-orange-400">ServiceMonitor</code>: Declarative scraping specification</li>
+                                            <li><code class="text-orange-400">PodMonitor</code>: For scraping pods directly</li>
+                                            <li><code class="text-orange-400">PrometheusRule</code>: Alerting and recording rules</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Topic 2 -->
+                            <div class="learning-module rounded-xl p-6 cursor-pointer" onclick="toggleTopic(this)">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="flex items-center gap-3">
+                                        <span class="difficulty-badge px-2 py-1 rounded bg-red-500/20 text-red-400">Architecture</span>
+                                        <h4 class="text-lg font-bold text-white">Thanos Architecture</h4>
+                                    </div>
+                                    <svg class="w-5 h-5 text-gray-400 expand-btn" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                </div>
+                                <p class="text-sm text-gray-400 mb-2">Global query view and unlimited retention</p>
+                                
+                                <div class="topic-content mt-4 space-y-4 border-t border-gray-800 pt-4">
+                                    <div class="space-y-3 text-sm text-gray-300">
+                                        <p><strong>Sidecar Pattern:</strong> Thanos Sidecar runs alongside Prometheus, uploads blocks to object storage (S3/GCS), and provides gRPC API for Queriers.</p>
+                                        
+                                        <p class="mt-2"><strong>Core Components:</strong></p>
+                                        <ul class="list-disc list-inside space-y-1 text-gray-400 text-xs">
+                                            <li><strong>Querier:</strong> Global query layer aggregating data from Sidecars and Store Gateways</li>
+                                            <li><strong>Store Gateway:</strong> Serves historical data from object storage</li>
+                                            <li><strong>Compactor:</strong> Downsampling and compaction of old blocks (5m → 1h → 1d resolution)</li>
+                                            <li><strong>Ruler:</strong> Global recording/alerting rules across all clusters</li>
+                                            <li><strong>Receiver:</strong> Accepts remote-write data (alternative to Sidecar)</li>
+                                        </ul>
+
+                                        <div class="code-block p-3 rounded text-xs">
+                                            <span class="text-gray-500"># Query across all clusters</span><br>
+                                            thanos query \<br>
+                                            &nbsp;&nbsp;--store=thanos-sidecar-1:10901 \<br>
+                                            &nbsp;&nbsp;--store=thanos-sidecar-2:10901 \<br>
+                                            &nbsp;&nbsp;--store=thanos-store:10901
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Topic 3 -->
+                            <div class="learning-module rounded-xl p-6 cursor-pointer" onclick="toggleTopic(this)">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="flex items-center gap-3">
+                                        <span class="difficulty-badge px-2 py-1 rounded bg-cyan-500/20 text-cyan-400">Observability</span>
+                                        <h4 class="text-lg font-bold text-white">OpenTelemetry Migration</h4>
+                                    </div>
+                                    <svg class="w-5 h-5 text-gray-400 expand-btn" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                </div>
+                                <p class="text-sm text-gray-400 mb-2">Bridging Prometheus and modern observability standards</p>
+                                
+                                <div class="topic-content mt-4 space-y-4 border-t border-gray-800 pt-4">
+                                    <div class="space-y-3 text-sm text-gray-300">
+                                        <p><strong>OTel Collector:</strong> Receives OTLP data and exports to Prometheus remote_write or OTLP.</p>
+                                        
+                                        <div class="code-block p-3 rounded text-xs">
+                                            receivers:<br>
+                                            &nbsp;&nbsp;otlp:<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;protocols:<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;grpc:<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;http:<br>
+                                            exporters:<br>
+                                            &nbsp;&nbsp;prometheusremotewrite:<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;endpoint: http://cortex:9009/api/prom/push<br>
+                                            service:<br>
+                                            &nbsp;&nbsp;pipelines:<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;metrics:<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;receivers: [otlp]<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exporters: [prometheusremotewrite]
+                                        </div>
+
+                                        <p class="mt-3 text-cyan-400"><strong>Exemplars:</strong> Link metrics to traces using OTel exemplars. Prometheus supports exemplars in OpenMetrics format, allowing you to jump from a latency spike to the specific trace causing it.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Topic 4 -->
+                            <div class="learning-module rounded-xl p-6 cursor-pointer" onclick="toggleTopic(this)">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="flex items-center gap-3">
+                                        <span class="difficulty-badge px-2 py-1 rounded bg-pink-500/20 text-pink-400">Security</span>
+                                        <h4 class="text-lg font-bold text-white">Security Hardening</h4>
+                                    </div>
+                                    <svg class="w-5 h-5 text-gray-400 expand-btn" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                </div>
+                                <p class="text-sm text-gray-400 mb-2">TLS, mTLS, and RBAC implementation</p>
+                                
+                                <div class="topic-content mt-4 space-y-4 border-t border-gray-800 pt-4">
+                                    <div class="space-y-3 text-sm text-gray-300">
+                                        <p><strong>Scrape TLS Configuration:</strong></p>
+                                        <div class="code-block p-3 rounded text-xs">
+                                            scrape_configs:<br>
+                                            &nbsp;&nbsp;- job_name: 'secure-app'<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;scheme: https<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;tls_config:<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ca_file: /etc/prometheus/certs/ca.crt<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cert_file: /etc/prometheus/certs/client.crt<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;key_file: /etc/prometheus/certs/client.key<br>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;insecure_skip_verify: false
+                                        </div>
+
+                                        <p class="mt-3"><strong>Authentication Methods:</strong></p>
+                                        <ul class="list-disc list-inside space-y-1 text-gray-400 text-xs">
+                                            <li><strong>Basic Auth:</strong> Username/password in scrape_config</li>
+                                            <li><strong>Bearer Token:</strong> For Kubernetes API and service mesh</li>
+                                            <li><strong>OAuth2:</strong> Client credentials flow support</li>
+                                            <li><strong>AWS SigV4:</strong> Native support for AMP (Amazon Managed Prometheus)</li>
+                                        </ul>
+
+                                        <p class="mt-3 text-pink-400"><strong>Network Security:</strong> Use reverse proxy (nginx/traefik) with basic auth for Prometheus UI, or enable <code class="bg-gray-800 px-1 rounded">--web.enable-admin-api</code> with caution (allows snapshot creation and TSDB admin).</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Flashcards Section -->
+    <section id="flashcards" class="py-24">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Interview Flashcards</h2>
+                <p class="text-gray-400 mb-8">Click cards to reveal answers. Master these for SRE interviews.</p>
+                
+                <div class="flex flex-wrap justify-center gap-2">
+                    <button onclick="filterCards('all')" class="filter-btn px-4 py-2 rounded-full text-xs font-mono bg-orange-500 text-white" data-cat="all">All</button>
+                    <button onclick="filterCards('architecture')" class="filter-btn px-4 py-2 rounded-full text-xs font-mono bg-gray-800 text-gray-400 hover:bg-gray-700" data-cat="architecture">Architecture</button>
+                    <button onclick="filterCards('promql')" class="filter-btn px-4 py-2 rounded-full text-xs font-mono bg-gray-800 text-gray-400 hover:bg-gray-700" data-cat="promql">PromQL</button>
+                    <button onclick="filterCards('scaling')" class="filter-btn px-4 py-2 rounded-full text-xs font-mono bg-gray-800 text-gray-400 hover:bg-gray-700" data-cat="scaling">Scaling</button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="flashcard-container">
+                <div class="flip-card" data-category="architecture" onclick="flipCard(this)">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="w-12 h-12 rounded-full bg-orange-500/20 flex items-center justify-center mb-4">
+                                <svg class="w-6 h-6 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                            </div>
+                            <h3 class="text-lg font-bold text-center">Why pull vs push architecture?</h3>
+                            <p class="text-xs text-gray-500 mt-4 font-mono">Architecture • Level 1</p>
+                        </div>
+                        <div class="flip-card-back">
+                            <p class="text-sm text-gray-300 text-center leading-relaxed">
+                                <strong class="text-orange-400">Advantages:</strong><br><br>
+                                • Single source of truth (server config)<br>
+                                • Easy target health detection<br>
+                                • Works through firewalls/NAT<br>
+                                • Can test locally with curl
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flip-card" data-category="promql" onclick="flipCard(this)">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center mb-4">
+                                <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                            </div>
+                            <h3 class="text-lg font-bold text-center">rate() vs irate()</h3>
+                            <p class="text-xs text-gray-500 mt-4 font-mono">PromQL • Level 2</p>
+                        </div>
+                        <div class="flip-card-back">
+                            <p class="text-sm text-gray-300 text-center leading-relaxed">
+                                <strong class="text-blue-400">rate()</strong>: Average per-second over time range (smooth, good for alerts)<br><br>
+                                <strong class="text-blue-400">irate()</strong>: Instant rate using last 2 points (spiky, good for graphs)
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flip-card" data-category="scaling" onclick="flipCard(this)">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center mb-4">
+                                <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/></svg>
+                            </div>
+                            <h3 class="text-lg font-bold text-center">Handling high cardinality</h3>
+                            <p class="text-xs text-gray-500 mt-4 font-mono">Scaling • Level 3</p>
+                        </div>
+                        <div class="flip-card-back">
+                            <p class="text-sm text-gray-300 text-center leading-relaxed">
+                                • Drop labels via metric_relabel_configs<br>
+                                • Use recording rules to pre-aggregate<br>
+                                • Increase scrape interval<br>
+                                • Shard by job/target<br>
+                                • Move to Thanos/VictoriaMetrics
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flip-card" data-category="architecture" onclick="flipCard(this)">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center mb-4">
+                                <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/></svg>
+                            </div>
+                            <h3 class="text-lg font-bold text-center">Counter vs Gauge</h3>
+                            <p class="text-xs text-gray-500 mt-4 font-mono">Architecture • Level 1</p>
+                        </div>
+                        <div class="flip-card-back">
+                            <p class="text-sm text-gray-300 text-center leading-relaxed">
+                                <strong class="text-green-400">Counter:</strong> Cumulative, only increases (resets to 0). Use rate().<br><br>
+                                <strong class="text-green-400">Gauge:</strong> Arbitrary values up/down. No aggregation needed.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flip-card" data-category="promql" onclick="flipCard(this)">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="w-12 h-12 rounded-full bg-yellow-500/20 flex items-center justify-center mb-4">
+                                <svg class="w-6 h-6 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            </div>
+                            <h3 class="text-lg font-bold text-center">Lookback delta (staleness)</h3>
+                            <p class="text-xs text-gray-500 mt-4 font-mono">PromQL • Level 3</p>
+                        </div>
+                        <div class="flip-card-back">
+                            <p class="text-sm text-gray-300 text-center leading-relaxed">
+                                Default is <strong class="text-yellow-400">5 minutes</strong>. If no sample in last 5m, time series is marked stale and won't appear in queries. Prevents old data from lingering after targets die.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flip-card" data-category="scaling" onclick="flipCard(this)">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center mb-4">
+                                <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                            </div>
+                            <h3 class="text-lg font-bold text-center">Federation vs Thanos</h3>
+                            <p class="text-xs text-gray-500 mt-4 font-mono">Scaling • Level 4</p>
+                        </div>
+                        <div class="flip-card-back">
+                            <p class="text-xs text-gray-300 text-center leading-relaxed">
+                                <strong class="text-red-400">Federation:</strong> Hierarchical, scrapes aggregated data from other Prometheus instances. Limited scale.<br><br>
+                                <strong class="text-red-400">Thanos:</strong> Sidecar pattern with object storage, global query view, unlimited retention.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cheat Sheet Section -->
+    <section id="cheatsheet" class="py-24 bg-[#050505]">
+        <div class="max-w-6xl mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Production Cheat Sheet</h2>
+            
+            <div class="flex flex-wrap justify-center gap-2 mb-8">
+                <button onclick="switchTab('metrics')" class="tab-btn active px-6 py-2 rounded-lg text-sm font-mono" data-tab="metrics">Metric Types</button>
+                <button onclick="switchTab('queries')" class="tab-btn px-6 py-2 rounded-lg text-sm font-mono bg-gray-800 text-gray-400" data-tab="queries">PromQL</button>
+                <button onclick="switchTab('config')" class="tab-btn px-6 py-2 rounded-lg text-sm font-mono bg-gray-800 text-gray-400" data-tab="config">Config</button>
+                <button onclick="switchTab('alerting')" class="tab-btn px-6 py-2 rounded-lg text-sm font-mono bg-gray-800 text-gray-400" data-tab="alerting">Alerting</button>
+            </div>
+
+            <div class="glass rounded-2xl p-6 md:p-8 min-h-[400px]">
+                
+                <div id="tab-metrics" class="tab-content">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="space-y-4">
+                            <h3 class="text-lg font-bold text-orange-400 flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-orange-500"></span> Counter
+                            </h3>
+                            <div class="code-block p-4 rounded text-sm text-gray-300">
+                                http_requests_total{method="GET",status="200"}
+                            </div>
+                            <ul class="text-sm text-gray-400 space-y-1 list-disc list-inside">
+                                <li>Only increases (or resets to 0)</li>
+                                <li>Use rate(), increase(), or irate()</li>
+                                <li>Examples: requests, errors, tasks completed</li>
+                            </ul>
+                        </div>
+
+                        <div class="space-y-4">
+                            <h3 class="text-lg font-bold text-blue-400 flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-blue-500"></span> Gauge
+                            </h3>
+                            <div class="code-block p-4 rounded text-sm text-gray-300">
+                                memory_usage_bytes{instance="node1"}
+                            </div>
+                            <ul class="text-sm text-gray-400 space-y-1 list-disc list-inside">
+                                <li>Arbitrary values up and down</li>
+                                <li>No rate calculation needed</li>
+                                <li>Examples: temperature, queue depth, RAM usage</li>
+                            </ul>
+                        </div>
+
+                        <div class="space-y-4">
+                            <h3 class="text-lg font-bold text-purple-400 flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-purple-500"></span> Histogram
+                            </h3>
+                            <div class="code-block p-4 rounded text-sm text-gray-300">
+                                request_duration_seconds_bucket{le="0.5"}
+                            </div>
+                            <ul class="text-sm text-gray-400 space-y-1 list-disc list-inside">
+                                <li>Observations in configurable buckets</li>
+                                <li>Generates: _count, _sum, _bucket</li>
+                                <li>Use histogram_quantile() for percentiles</li>
+                            </ul>
+                        </div>
+
+                        <div class="space-y-4">
+                            <h3 class="text-lg font-bold text-pink-400 flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-pink-500"></span> Summary
+                            </h3>
+                            <div class="code-block p-4 rounded text-sm text-gray-300">
+                                request_duration_seconds{quantile="0.95"}
+                            </div>
+                            <ul class="text-sm text-gray-400 space-y-1 list-disc list-inside">
+                                <li>Calculates quantiles client-side</li>
+                                <li>Higher CPU cost</li>
+                                <li>Cannot aggregate across dimensions</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tab-queries" class="tab-content hidden space-y-4">
+                    <div class="grid gap-4">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between p-4 bg-black/40 rounded-lg border border-gray-800 hover:border-orange-500/30 transition-colors">
+                            <code class="text-orange-400 font-mono text-sm md:text-base">rate(http_requests_total[5m])</code>
+                            <span class="text-xs text-gray-500 mt-2 md:mt-0">Per-second rate for counters</span>
+                        </div>
+                        <div class="flex flex-col md:flex-row md:items-center justify-between p-4 bg-black/40 rounded-lg border border-gray-800 hover:border-orange-500/30 transition-colors">
+                            <code class="text-orange-400 font-mono text-sm md:text-base">increase(http_requests_total[1h])</code>
+                            <span class="text-xs text-gray-500 mt-2 md:mt-0">Total increase over time</span>
+                        </div>
+                        <div class="flex flex-col md:flex-row md:items-center justify-between p-4 bg-black/40 rounded-lg border border-gray-800 hover:border-orange-500/30 transition-colors">
+                            <code class="text-orange-400 font-mono text-sm md:text-base">histogram_quantile(0.99, rate(http_req_duration_bucket[5m]))</code>
+                            <span class="text-xs text-gray-500 mt-2 md:mt-0">Calculate 99th percentile</span>
+                        </div>
+                        <div class="flex flex-col md:flex-row md:items-center justify-between p-4 bg-black/40 rounded-lg border border-gray-800 hover:border-orange-500/30 transition-colors">
+                            <code class="text-orange-400 font-mono text-sm md:text-base">sum by (method) (rate(http_requests_total[5m]))</code>
+                            <span class="text-xs text-gray-500 mt-2 md:mt-0">Aggregate keeping label</span>
+                        </div>
+                        <div class="flex flex-col md:flex-row md:items-center justify-between p-4 bg-black/40 rounded-lg border border-gray-800 hover:border-orange-500/30 transition-colors">
+                            <code class="text-orange-400 font-mono text-sm md:text-base">topk(5, sum by (instance) (cpu_usage))</code>
+                            <span class="text-xs text-gray-500 mt-2 md:mt-0">Top 5 instances</span>
+                        </div>
+                        <div class="flex flex-col md:flex-row md:items-center justify-between p-4 bg-black/40 rounded-lg border border-gray-800 hover:border-orange-500/30 transition-colors">
+                            <code class="text-orange-400 font-mono text-sm md:text-base">up == 0</code>
+                            <span class="text-xs text-gray-500 mt-2 md:mt-0">Find down targets</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tab-config" class="tab-content hidden">
+                    <div class="code-block p-6 rounded-lg overflow-x-auto text-sm">
+                        <pre class="text-gray-300"><span class="text-purple-400">global:</span>
+  <span class="text-blue-400">scrape_interval:</span> 15s
+  <span class="text-blue-400">evaluation_interval:</span> 15s
+  <span class="text-blue-400">external_labels:</span>
+    <span class="text-blue-400">cluster:</span> <span class="text-green-400">'prod'</span>
+    <span class="text-blue-400">replica:</span> <span class="text-green-400">'prometheus-0'</span>
+
+<span class="text-purple-400">scrape_configs:</span>
+  <span class="text-purple-400">- job_name:</span> <span class="text-green-400">'kubernetes-pods'</span>
+    <span class="text-blue-400">kubernetes_sd_configs:</span>
+      <span class="text-purple-400">- role:</span> pod
+    <span class="text-blue-400">relabel_configs:</span>
+      <span class="text-gray-500"># Drop pods without prometheus.io/scrape annotation</span>
+      <span class="text-purple-400">- source_labels:</span> [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+        <span class="text-blue-400">action:</span> keep
+        <span class="text-blue-400">regex:</span> true
+      <span class="text-gray-500"># Drop high cardinality metrics</span>
+      <span class="text-purple-400">- source_labels:</span> [__name__]
+        <span class="text-blue-400">regex:</span> <span class="text-green-400">'go_.*'</span>
+        <span class="text-blue-400">action:</span> drop</pre>
+                    </div>
+                </div>
+
+                <div id="tab-alerting" class="tab-content hidden space-y-6">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-bold text-orange-400 mb-3">Recording Rules (optimization)</h4>
+                            <div class="code-block p-4 rounded text-xs">
+                                <pre class="text-gray-300"><span class="text-purple-400">groups:</span>
+  <span class="text-purple-400">- name:</span> api
+    <span class="text-blue-400">interval:</span> 10s
+    <span class="text-purple-400">rules:</span>
+      <span class="text-purple-400">- record:</span> api:requests:rate5m
+        <span class="text-blue-400">expr:</span> |
+          sum by (method) (
+            rate(http_requests_total[5m])
+          )</pre>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-red-400 mb-3">Alerting Rules</h4>
+                            <div class="code-block p-4 rounded text-xs">
+                                <pre class="text-gray-300"><span class="text-purple-400">groups:</span>
+  <span class="text-purple-400">- name:</span> alerts
+    <span class="text-purple-400">rules:</span>
+      <span class="text-purple-400">- alert:</span> HighErrorRate
+        <span class="text-blue-400">expr:</span> |
+          rate(errors_total[5m]) > 0.1
+        <span class="text-blue-400">for:</span> 5m
+        <span class="text-blue-400">labels:</span>
+          <span class="text-blue-400">severity:</span> critical
+        <span class="text-blue-400">annotations:</span>
+          <span class="text-blue-400">summary:</span> <span class="text-green-400">"Error rate elevated"</span></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Progress Section -->
+    <section class="py-24">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold mb-12">Progress Tracker</h2>
+            <div class="glass rounded-2xl p-8">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                    <div class="relative group cursor-pointer" onclick="animateProgress(1, 100)">
+                        <svg class="w-24 h-24 mx-auto transform -rotate-90">
+                            <circle class="text-gray-800" stroke-width="6" stroke="currentColor" fill="transparent" r="42" cx="48" cy="48"/>
+                            <circle id="prog-1" class="text-green-500 progress-ring-circle" stroke-width="6" stroke-linecap="round" stroke="currentColor" fill="transparent" r="42" cx="48" cy="48" stroke-dasharray="263.89" stroke-dashoffset="263.89"/>
+                        </svg>
+                        <div class="absolute top-0 left-0 w-full h-full flex items-center justify-center">
+                            <span id="text-1" class="text-lg font-bold text-gray-400">0%</span>
+                        </div>
+                        <p class="mt-2 text-xs text-gray-500 uppercase">Beginner</p>
+                    </div>
+
+                    <div class="relative group cursor-pointer" onclick="animateProgress(2, 65)">
+                        <svg class="w-24 h-24 mx-auto transform -rotate-90">
+                            <circle class="text-gray-800" stroke-width="6" stroke="currentColor" fill="transparent" r="42" cx="48" cy="48"/>
+                            <circle id="prog-2" class="text-blue-500 progress-ring-circle" stroke-width="6" stroke-linecap="round" stroke="currentColor" fill="transparent" r="42" cx="48" cy="48" stroke-dasharray="263.89" stroke-dashoffset="263.89"/>
+                        </svg>
+                        <div class="absolute top-0 left-0 w-full h-full flex items-center justify-center">
+                            <span id="text-2" class="text-lg font-bold text-gray-400">0%</span>
+                        </div>
+                        <p class="mt-2 text-xs text-gray-500 uppercase">Intermediate</p>
+                    </div>
+
+                    <div class="relative group cursor-pointer" onclick="animateProgress(3, 30)">
+                        <svg class="w-24 h-24 mx-auto transform -rotate-90">
+                            <circle class="text-gray-800" stroke-width="6" stroke="currentColor" fill="transparent" r="42" cx="48" cy="48"/>
+                            <circle id="prog-3" class="text-purple-500 progress-ring-circle" stroke-width="6" stroke-linecap="round" stroke="currentColor" fill="transparent" r="42" cx="48" cy="48" stroke-dasharray="263.89" stroke-dashoffset="263.89"/>
+                        </svg>
+                        <div class="absolute top-0 left-0 w-full h-full flex items-center justify-center">
+                            <span id="text-3" class="text-lg font-bold text-gray-400">0%</span>
+                        </div>
+                        <p class="mt-2 text-xs text-gray-500 uppercase">Advanced</p>
+                    </div>
+
+                    <div class="relative group cursor-pointer" onclick="animateProgress(4, 10)">
+                        <svg class="w-24 h-24 mx-auto transform -rotate-90">
+                            <circle class="text-gray-800" stroke-width="6" stroke="currentColor" fill="transparent" r="42" cx="48" cy="48"/>
+                            <circle id="prog-4" class="text-orange-500 progress-ring-circle" stroke-width="6" stroke-linecap="round" stroke="currentColor" fill="transparent" r="42" cx="48" cy="48" stroke-dasharray="263.89" stroke-dashoffset="263.89"/>
+                        </svg>
+                        <div class="absolute top-0 left-0 w-full h-full flex items-center justify-center">
+                            <span id="text-4" class="text-lg font-bold text-gray-400">0%</span>
+                        </div>
+                        <p class="mt-2 text-xs text-gray-500 uppercase">Expert</p>
+                    </div>
+                </div>
+                <p class="mt-6 text-sm text-gray-500">Click rings to simulate progress</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="border-t border-gray-800 py-12 bg-black">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+            <p class="text-gray-600 text-sm">Prometheus Mastery Platform • Built for Cloud Native Engineers</p>
+        </div>
+    </footer>
+
+    <script>
+        // Architecture Details
+        function showArchDetails(component) {
+            const details = {
+                'targets': '<strong class="text-orange-400">Targets:</strong> Endpoints exposing /metrics endpoint. Can be instrumented apps or exporters. Prometheus scrapes these via HTTP pull.',
+                'prometheus': '<strong class="text-orange-400">Prometheus Server:</strong> Core component that scrapes metrics, stores them in TSDB, evaluates rules, and sends alerts.',
+                'tsdb': '<strong class="text-orange-400">TSDB:</strong> Time Series Database. Stores data in 2-hour blocks with Write-Ahead Log (WAL). Supports compression and retention.',
+                'alertmanager': '<strong class="text-red-400">Alertmanager:</strong> Handles alerts from Prometheus. Manages deduplication, grouping, routing to receivers (Slack, PagerDuty), and silencing.',
+                'grafana': '<strong class="text-yellow-400">Grafana:</strong> Visualization layer. Queries Prometheus via PromQL to render dashboards.',
+                'sd': '<strong class="text-gray-400">Service Discovery:</strong> Automatically discovers targets in Kubernetes, AWS, Consul, etc.'
+            };
+            
+            const panel = document.getElementById('arch-info');
+            panel.innerHTML = `<p class="text-gray-300 text-sm leading-relaxed">${details[component]}</p>`;
+            panel.classList.add('border-orange-500/50');
+            setTimeout(() => panel.classList.remove('border-orange-500/50'), 300);
+        }
+
+        // Topic Expansion
+        function toggleTopic(element) {
+            const content = element.querySelector('.topic-content');
+            const btn = element.querySelector('.expand-btn');
+            
+            if (content.classList.contains('expanded')) {
+                content.classList.remove('expanded');
+                btn.classList.remove('rotated');
+                element.classList.remove('border-orange-500/30');
+            } else {
+                // Close others
+                document.querySelectorAll('.topic-content').forEach(c => c.classList.remove('expanded'));
+                document.querySelectorAll('.expand-btn').forEach(b => b.classList.remove('rotated'));
+                
+                // Open this one
+                content.classList.add('expanded');
+                btn.classList.add('rotated');
+                element.classList.add('border-orange-500/30');
+            }
+        }
+
+        // Flashcard Functions
+        function flipCard(card) {
+            card.classList.toggle('flipped');
+        }
+
+        function filterCards(category) {
+            const cards = document.querySelectorAll('.flip-card');
+            const buttons = document.querySelectorAll('.filter-btn');
+            
+            buttons.forEach(btn => {
+                if(btn.dataset.cat === category) {
+                    btn.classList.remove('bg-gray-800', 'text-gray-400');
+                    btn.classList.add('bg-orange-500', 'text-white');
+                } else {
+                    btn.classList.add('bg-gray-800', 'text-gray-400');
+                    btn.classList.remove('bg-orange-500', 'text-white');
+                }
+            });
+
+            cards.forEach(card => {
+                if(category === 'all' || card.dataset.category === category) {
+                    card.style.display = 'block';
+                    setTimeout(() => card.style.opacity = '1', 50);
+                } else {
+                    card.style.opacity = '0';
+                    setTimeout(() => card.style.display = 'none', 300);
+                }
+            });
+        }
+
+        // Tab Switching
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
+            document.getElementById('tab-' + tabName).classList.remove('hidden');
+            
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                if(btn.dataset.tab === tabName) {
+                    btn.classList.add('active');
+                    btn.classList.remove('bg-gray-800', 'text-gray-400');
+                } else {
+                    btn.classList.remove('active');
+                    btn.classList.add('bg-gray-800', 'text-gray-400');
+                }
+            });
+        }
+
+        // Progress Animation
+        function animateProgress(id, percent) {
+            const circle = document.getElementById('prog-' + id);
+            const text = document.getElementById('text-' + id);
+            const radius = circle.r.baseVal.value;
+            const circumference = radius * 2 * Math.PI;
+            const offset = circumference - (percent / 100) * circumference;
+            
+            circle.style.strokeDashoffset = offset;
+            
+            let current = 0;
+            const interval = setInterval(() => {
+                if(current >= percent) clearInterval(interval);
+                text.textContent = current + '%';
+                current++;
+            }, 10);
+        }
+
+        // Scroll Animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if(target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+    </script>
+</body>
+</html>
